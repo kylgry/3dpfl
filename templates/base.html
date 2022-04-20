@@ -11,11 +11,24 @@
 
 <body>
 
-  <main id="content">
-    {% block content %} {% endblock %}
-  </main>
+  <div id="nav">
+    the 3d print failure library
+    <span class="nav-links">
+      {% if not session['user_id'] %}<a href="/register">register</a> or <a href="/login">login</a>
+      {% else %}<a href="/logout">logout</a>{% endif %}
+    </span>
+  </div>
 
-  <script src="/static/app.js"></script>
+  <div id="flashed-msgs">
+    {% for message in get_flashed_messages() %}{{ message }}
+    {% endfor %}
+  </div>
+
+  <div id="main">
+    {% block content %} {% endblock %}
+  </div>
+
+  <!-- <script src="/static/app.js"></script> -->
 </body>
 
 </html>

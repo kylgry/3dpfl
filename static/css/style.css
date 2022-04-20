@@ -1,0 +1,21 @@
+
+#nav, #main, #flashed-msgs {
+  margin: auto;
+  width: 1000px;
+}
+
+#nav {
+  padding: 50px 20px 20px 20px;
+}
+
+#flashed-msgs {
+  padding: 0px 20px;
+}
+
+#main {
+  padding: 20px;
+}
+
+.nav-links {
+  float: right;
+}
