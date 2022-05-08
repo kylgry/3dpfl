@@ -1,22 +1,12 @@
-{% extends 'base.html' %}
-
-{% block title %}post{% endblock %}
+{% extends 'base.html'  %}
+{% block title %}3d print failure library{% endblock %}
 
 {% block content %}
 
-  <div class="row justify-content-md-center">
-    <form method="POST" id="user_form">
-      {{ form.hidden_tag() }}
-
-      {% for field in form if field.widget.input_type != 'hidden' %}
-        {% for error in field.errors %}
-          <span class="text-danger">{{ error }}</span>
-        {% endfor %}
-        <p>{{ field(placeholder=field.label.text, class="form-control") }}</p>
-      {% endfor %}
-
-      <button class="">post</button>
-    </form>
-  </div>
+<p>printer: {{ post.printer.model }}</p>
+<p>filament: {{ post.filament.type }}</p>
+<p>failure: {{ post.failure }}</p>
+<p>solution: {{ post.solution }}</p>
+<p>submitted by: {{ post.user.username}}</p>
 
 {% endblock %}

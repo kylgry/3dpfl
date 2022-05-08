@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}post{% endblock %}
+
+{% block content %}
+
+    <form method="POST" id="postnew">
+        {{ form.hidden_tag() }}
+        {{ form.printer_modified }}<div class="autocomplete postnew">{{ form.printer(placeholder=form.printer.label.text) }}</div><div class="autocomplete postnew">{{ form.filament(placeholder=form.filament.label.text) }}</div>
+        {{ form.failure(rows=6, placeholder=form.failure.label.text) }}
+        {{ form.solution(rows=6, placeholder=form.solution.label.text) }}
+        <button>post</button>
+    </form>
+
+  <script>
+
+    async function addAutocompletes() {
+      await getList('printer','model');
+      await getList('filament','type');
+      autocomplete(document.getElementById('printer'),list.printer.model)
+      autocomplete(document.getElementById('filament'),list.filament.type)
+    }
+
+    addAutocompletes()
+
+  </script>
+
+{% endblock %}

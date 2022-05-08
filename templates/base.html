@@ -11,11 +11,15 @@
 
 <body>
 
+  <script src="http://unpkg.com/axios/dist/axios.js"></script>
+  <script src="/static/js/app.js"></script>
+
   <div id="nav">
-    the 3d print failure library
+    <a class="logo" href="/">the 3d print failure library</a>&nbsp;&nbsp;&nbsp;&nbsp;
     <span class="nav-links">
-      {% if not session['user_id'] %}<a href="/register">register</a> or <a href="/login">login</a>
-      {% else %}<a href="/logout">logout</a>{% endif %}
+      <a href="/posts">browse</a>&nbsp;&nbsp;
+      {% if not session['user_id'] %}<a href="/register">register</a>&nbsp;&nbsp;&nbsp;<a href="/login">login</a>
+      {% else %}<a href="/posts/new">post</a>&nbsp;&nbsp;&nbsp;<a href="/logout">logout</a>{% endif %}
     </span>
   </div>
 
@@ -28,7 +32,6 @@
     {% block content %} {% endblock %}
   </div>
 
-  <!-- <script src="/static/app.js"></script> -->
 </body>
 
 </html>

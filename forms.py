@@ -15,10 +15,8 @@ class LoginForm(FlaskForm):
 
 class PostForm(FlaskForm):
 
-    category = SelectField('Failure Category')
-    printerbrand = SelectField('Printer Brand')
-    printer = SelectField('Printer')
-    filamentbrand = SelectField('Filament Brand')
-    filament = SelectField('Filament')
-    failure = StringField('Failure Description', validators=[DataRequired()])
-    solution = StringField('Solution Description', validators=[DataRequired()])
+    printer_modified = SelectField('printer state')
+    printer = StringField('brand and printer model')
+    filament = StringField('brand and filament type')
+    failure = TextAreaField('describe the failure', validators=[DataRequired()])
+    solution = TextAreaField('describe the solution', validators=[DataRequired()])

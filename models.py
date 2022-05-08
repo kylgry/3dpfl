@@ -35,56 +35,49 @@ class User(db.Model):
 
         return False
 
-
-class PrinterBrand(db.Model):
-
-    __tablename__ = 'printerbrands'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    brand = db.Column(db.Text, nullable=False)
-
 class Printer(db.Model):
 
     __tablename__ = 'printers'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    brand = db.Column(db.ForeignKey('printerbrands.id'))
     model = db.Column(db.Text, nullable=False)
 
-class FilamentBrand(db.Model):
-
-    __tablename__ = 'filamentbrands'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    brand = db.Column(db.Text, nullable=False)
+    def serialize(self):
+        return {
+            'id': self.id,
+            'model': self.model,
+        }
 
 class Filament(db.Model):
 
     __tablename__ = 'filaments'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    brand = db.Column(db.ForeignKey('filamentbrands.id'), nullable=False)
     type = db.Column(db.Text, nullable=False)
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'type': self.type,
+        }
 
-class FailureCategory(db.Model):
-
-    __tablename__ = 'failurecategories'
-
-    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.Text, nullable=False)
 
 class Post(db.Model):
 
     __tablename__ = 'posts'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    category = db.Column(db.ForeignKey('failurecategories.id'), nullable=False)
-    printer = db.Column(db.ForeignKey('printers.id'), nullable=False)
-    filament = db.Column(db.ForeignKey('filaments.id'), nullable=False)
+    user_id = db.Column(db.ForeignKey('users.id'), nullable=False)
+    printer_modified = db.Column(db.Boolean, nullable=False)
+    printer_id = db.Column(db.ForeignKey('printers.id'), nullable=False)
+    filament_id = db.Column(db.ForeignKey('filaments.id'), nullable=False)
     failure = db.Column(db.Text, nullable=False)
     solution = db.Column(db.Text, nullable=False)
     image = db.Column(db.Text)
+    user = db.relationship('User')
+    printer = db.relationship('Printer')
+    filament = db.relationship('Filament')
+
 
 class Comment(db.Model):
 
