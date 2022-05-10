@@ -5,7 +5,7 @@ from models import Printer, Filament, User, Post
 db.drop_all()
 db.create_all()
 
-user1 = User.register('admin', 'admin')
+user1 = User.register('admin', 'password')
 user2 = User.register('testuser', 'testuser')
 db.session.add(user1)
 db.session.add(user2)

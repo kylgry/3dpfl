@@ -20,3 +20,9 @@ class PostForm(FlaskForm):
     filament = StringField('brand and filament type')
     failure = TextAreaField('describe the failure', validators=[DataRequired()])
     solution = TextAreaField('describe the solution', validators=[DataRequired()])
+
+printer_mod_choices = [(1, "Stock"),(2, "Modified")]
+
+class CommentForm(FlaskForm):
+
+    comment = TextAreaField('add a comment', validators=[DataRequired()])

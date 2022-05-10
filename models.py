@@ -77,6 +77,8 @@ class Post(db.Model):
     user = db.relationship('User')
     printer = db.relationship('Printer')
     filament = db.relationship('Filament')
+    comments = db.relationship('Comment')
+    votes = db.relationship('Vote')
 
 
 class Comment(db.Model):
@@ -84,12 +86,17 @@ class Comment(db.Model):
     __tablename__ = 'comments'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    username = db.Column(db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.ForeignKey('users.id'), nullable=False)
+    post_id = db.Column(db.ForeignKey('posts.id'), nullable=False)
     comment = db.Column(db.Text, nullable=False)
+    user = db.relationship('User')
+
 
 class Vote(db.Model):
 
     __tablename__ = 'votes'
 
-    username = db.Column(db.ForeignKey('users.id'), primary_key=True)
-    post = db.Column(db.ForeignKey('posts.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.ForeignKey('users.id'))
+    post_id = db.Column(db.ForeignKey('posts.id'))
+    db.UniqueConstraint(user_id, post_id)

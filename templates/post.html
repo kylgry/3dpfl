@@ -1,12 +1,46 @@
 {% extends 'base.html'  %}
-{% block title %}3d print failure library{% endblock %}
+{% block title %}post{% endblock %}
 
 {% block content %}
+<h3>setup</h3>
+<p>Printer - {{ post.printer.model }}<br>
+Filament - {{ post.filament.type }}</p>
+<h3>failure</h3>
+<p>{{ post.failure }}</p>
+<h3>solution</h3>
+<p>{{ post.solution }}</p>
+<p><i>shared by {{ post.user.username}}</i></p>
+<p>{{ post.votes|length }} {{ 'vote' if post.votes|length == 1 else 'votes' }}</p>
 
-<p>printer: {{ post.printer.model }}</p>
-<p>filament: {{ post.filament.type }}</p>
-<p>failure: {{ post.failure }}</p>
-<p>solution: {{ post.solution }}</p>
-<p>submitted by: {{ post.user.username}}</p>
+
+{% if owned %}
+<a class="button" href="/posts/{{ post.id }}/edit">edit post</a>
+{% endif %}
+{% if 'user_id' in session %}
+{% if vote %}
+<form method="POST" id="removevote" action="/votes/{{ vote.id }}/del" class="inline">
+    <button>remove vote</button>
+</form>
+{% else %}
+<form method="POST" id="addvote" action="/votes" class="inline">
+    <input type="hidden" name="post_id" value="{{ post.id }}">
+    <button>add vote</button>
+</form>
+{% endif %}
+{% endif %}
+
+<h3>comments</h3>
+{% for comment in post.comments %}
+<p>{{ comment.user.username }} > {{ comment.comment }}</p>
+{% endfor %}
+
+{% if 'user_id' in session %}
+<form method="POST" id="comment" action="/comments">
+    {{ form.hidden_tag() }}
+    {{ form.comment }}
+    <input type="hidden" name="post_id" value="{{ post.id }}">
+    <button>add comment</button>
+</form>
+{% endif %}
 
 {% endblock %}

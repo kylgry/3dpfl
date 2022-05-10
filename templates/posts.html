@@ -9,12 +9,13 @@
 <button>filter</button><a href="/posts">clear</a>
 </form><br>
 <table id="posts">
-  {% for post in posts %}
+  {% for (post, votecount) in posts %}
   <tr>
-    <td class="td-sm">{{ post.printer.model }}</td>
-    <td class="td-sm">{{ post.filament.type }}</td>
+    <td class="td-sm"><a href="/posts/{{ post.id }}">{{ post.printer.model }}</a></td>
+    <td class="td-sm"><a href="/posts/{{ post.id }}">{{ post.filament.type }}</a></td>
     <td class="td-lg"><a href="/posts/{{ post.id }}">{{ post.failure }}</a></td>
     <td class="td-lg"><a href="/posts/{{ post.id }}">{{ post.solution }}</a></td>
+    <td class="td-exsm">{{ votecount }}</td>
   </tr>
   {% endfor %}
 </table>

@@ -1,10 +1,19 @@
 type
 Polymaker Polylite PLA
-Polymaker Polylite ALA
+Polymaker Polylite ASA
 Polymaker Polylite ABS
 Polymaker Polylite PETG
+Polymaker Polylite PC
 Polymaker Polyterra PLA
 Polymaker Polylite PLA Pro
+Polymaker Polymide CoPa
+Polymaker Polymide PA6-GF
+Polymaker Polymide PA6-CF
+Polymaker Polymide PA12-CF
+Polymaker Polymax PLA
+Polymaker Polymax PC
+Polymaker Polymax PC-FR
+Polymaker Polymax PETG
 Prusament PLA
 Prusament PETG
 Prusament ASA

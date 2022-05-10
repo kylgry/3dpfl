@@ -1,43 +1,44 @@
 users
+ - id
  - username
  - password
 
-filament brands
- - id
- - brand
-
 filaments
  - id
- - brand (--> filament brands)
- - type
-
-printer brands
- - id
  - brand
+ - type
 
 printers
  - id
- - brand (--> printer brands)
+ - brand
  - model
 
-failure categories
+post
  - id
- - name
+ - user_id
+ - printer_modified (yes/no)
+ - printer_id --> printer models
+ - filament_id --> filaments
+ - failure description
+ - solution description
+ - image
 
- post
-  - id
-  - failure category (--> failure category)
-  - printer model (--> printer models)
-  - filament name (--> filaments)
-  - failure description
-  - solution description
-  - image
 
 comment
  - id
- - username
+ - user_id --> users
+ - post_id --> posts
  - comment
 
 vote
- - username (primary key)
- - post (primary key)
+ - id
+ - user_id --> users
+ - post_id --> posts
+
+tag
+ - id
+ - name
+
+post_tags
+ - post_id --> posts 
+ - tag_id --> tags

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, render_template, abort, session, flash, redirect
 from sqlalchemy.exc import IntegrityError
 from models import db, connect_db, User, Printer, Filament, Post, Comment, Vote
-from forms import RegisterForm, LoginForm, PostForm
+from forms import RegisterForm, LoginForm, PostForm, printer_mod_choices, CommentForm
 from keys import FLASK_SECRET_KEY
 from flask_bcrypt import Bcrypt
 
@@ -98,30 +98,20 @@ def show_posts():
     printer = request.args.get('printer')
     filament = request.args.get('filament')
 
-    if printer == '':
-        printer = None;
+    queries = []
 
-    if filament == '':
-        filament = None;
+    if printer != None and printer != '':
+        queries.append(Post.printer.has(model=printer))
 
-    if printer == None and filament == None:
-        posts = Post.query.all()
-    elif filament == None:
-        posts = db.session.query(Post).filter(Post.printer.has(model=printer)).all()
-    elif printer == None:
-        posts = db.session.query(Post).filter(Post.filament.has(type=filament)).all()
-    else:
-        posts = db.session.query(Post).filter(Post.printer.has(model=printer)).filter(Post.filament.has(type=filament)).all()
+    if filament != None and filament != '':
+        queries.append(Post.filament.has(type=filament))
+
+    posts = db.session.query(Post, db.func.count(Vote.id)).filter(*queries).outerjoin(Vote).group_by(Post).order_by(db.func.count(Vote.id).desc()).all()
 
     filter = {'printer': printer,'filament': filament }
 
     return render_template('posts.html', posts=posts, filter=filter)
 
-@app.route('/posts/<id>')
-def show_post(id):
-
-    post = Post.query.get(id)
-    return render_template('post.html', post=post)
 
 @app.route('/posts/new')
 def show_add_post():
@@ -133,6 +123,7 @@ def show_add_post():
     form = PostForm()
     form.printer_modified.choices = [(1, "Stock"),(2, "Modified")]
     return render_template('postnew.html', form=form)
+
 
 @app.route('/posts/new', methods=["POST"])
 def add_post():
@@ -175,6 +166,110 @@ def add_post():
         db.session.commit()
 
     return redirect(f'/posts/{post.id}')
+
+
+@app.route('/posts/<id>')
+def show_post(id):
+
+    post = Post.query.get(id)
+    owned = True if session.get('user_id') == post.user_id else False
+    form = CommentForm()
+    vote = db.session.query(Vote).filter_by(user_id=session.get('user_id')).filter_by(post_id=post.id).first()
+    print(vote)
+
+    return render_template('post.html', post=post, owned=owned, form=form, vote=vote)
+
+
+@app.route('/posts/<id>/edit', methods=['GET', 'POST'])
+def edit_post(id):
+
+    post = Post.query.get(id)
+
+    if session.get('user_id') != post.user_id:
+        return redirect('/')
+
+    form = PostForm()
+    form.printer_modified.choices = printer_mod_choices
+
+    if form.validate_on_submit():
+
+        post.failure = form.failure.data
+        post.solution = form.solution.data
+
+        post.printer_modified = False if form.printer_modified.data == 1 else True
+
+        if form.printer.data not in [r for (r,) in db.session.query(Printer.model)]:
+            printer = Printer(model=form.printer.data)
+            db.session.add(printer)
+            db.session.commit()
+            post.printer = printer
+        else:
+            post.printer = db.session.query(Printer).filter_by(model=form.printer.data).first()
+
+        if form.filament.data not in [r for (r,) in db.session.query(Filament.type)]:
+            filament = Filament(type=form.filament.data)
+            db.session.add(filament)
+            db.session.commit()
+            post.filament = filament
+        else:
+            post.filament = db.session.query(Filament).filter_by(type=form.filament.data).first()
+
+        db.session.commit()
+        return redirect(f'/posts/{post.id}')
+
+    form.printer.data = post.printer.model
+    form.filament.data = post.filament.type
+    form.failure.data = post.failure
+    form.solution.data = post.solution
+    return render_template('postedit.html', post=post, form=form)
+
+@app.route('/comments', methods=['POST'])
+def add_comment():
+
+    if 'user_id' not in session:
+        return redirect('/')
+
+    form = CommentForm()
+    post_id = request.form['post_id']
+
+    if form.validate_on_submit():
+        comment = Comment(user_id=session['user_id'],post_id=post_id,comment=form.comment.data)
+        db.session.add(comment)
+        db.session.commit()
+
+    return redirect(f'/posts/{post_id}')
+
+@app.route('/votes', methods=['POST'])
+def add_vote():
+
+    if 'user_id' not in session:
+        return redirect('/')
+
+    post_id = request.form['post_id']
+    vote = Vote(user_id=session['user_id'],post_id=post_id)
+    db.session.add(vote)
+    db.session.commit()
+    return redirect(f'/posts/{post_id}')
+
+# would like to be REST compliant without AJAX, but html spec doesn't support DELETE in forms
+# https://softwareengineering.stackexchange.com/questions/114156/why-are-there-no-put-and-delete-methods-on-html-forms
+# https://www.w3.org/Bugs/Public/show_bug.cgi?id=10671#c4
+
+@app.route('/votes/<id>/del', methods=['POST'])
+def remove_vote(id):
+
+    if 'user_id' not in session:
+        return redirect('/')
+
+    vote = Vote.query.get(id)
+    post_id = vote.post_id
+
+    if vote.user_id != session['user_id']:
+        return redirect('/')
+
+    db.session.delete(vote)
+    db.session.commit()
+    return redirect(f'/posts/{post_id}')
 
 
 @app.route('/_list/<table>/<column>')
