@@ -4,6 +4,7 @@ from models import db, connect_db, User, Printer, Filament, Post, Comment, Vote
 from forms import RegisterForm, LoginForm, PostForm, printer_mod_choices, CommentForm
 # from keys import FLASK_SECRET_KEY
 from flask_bcrypt import Bcrypt
+import os
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'postgresql:///3dpfl')
