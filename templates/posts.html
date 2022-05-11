@@ -11,11 +11,11 @@
 <table id="posts">
   {% for (post, votecount) in posts %}
   <tr>
+    <td class="td-exsm">{{ votecount }}</td>
     <td class="td-sm"><a href="/posts/{{ post.id }}">{{ post.printer.model }}</a></td>
     <td class="td-sm"><a href="/posts/{{ post.id }}">{{ post.filament.type }}</a></td>
-    <td class="td-lg"><a href="/posts/{{ post.id }}">{{ post.failure }}</a></td>
-    <td class="td-lg"><a href="/posts/{{ post.id }}">{{ post.solution }}</a></td>
-    <td class="td-exsm">{{ votecount }}</td>
+    <td class="td-lg"><a href="/posts/{{ post.id }}">{{ post.failure[0:80] }}{{ "..." if post.failure|length > 80 }}</a></td>
+    <td class="td-lg"><a href="/posts/{{ post.id }}">{{ post.solution[0:80] }}{{ "..." if post.solution|length > 80 }}</a></td>
   </tr>
   {% endfor %}
 </table>

@@ -1,7 +1,0 @@
-user_id,printer_modified,printer_id,filament_id,failure,solution
-1,False,1,1,blah,blah
-1,False,2,1,blah,blah
-1,False,3,8,blah,blah
-2,False,2,4,blah,blah
-2,True,7,2,blah,blah
-2,False,4,3,blah,blah

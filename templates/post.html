@@ -17,6 +17,7 @@ Filament - {{ post.filament.type }}</p>
 <a class="button" href="/posts/{{ post.id }}/edit">edit post</a>
 {% endif %}
 {% if 'user_id' in session %}
+
 {% if vote %}
 <form method="POST" id="removevote" action="/votes/{{ vote.id }}/del" class="inline">
     <button>remove vote</button>
@@ -27,6 +28,9 @@ Filament - {{ post.filament.type }}</p>
     <button>add vote</button>
 </form>
 {% endif %}
+
+{% else %}
+<p><i><a href="/login">login</a> to vote or comment</i></p>
 {% endif %}
 
 <h3>comments</h3>

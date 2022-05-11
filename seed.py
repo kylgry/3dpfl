@@ -5,20 +5,18 @@ from models import Printer, Filament, User, Post
 db.drop_all()
 db.create_all()
 
-user1 = User.register('admin', 'password')
-user2 = User.register('testuser', 'testuser')
-db.session.add(user1)
-db.session.add(user2)
+user = User(username='3dpfl',password='$2b$12$Wra61dnEC3oTIHOoLU3NPOVZXOg7fmmkP1R6HBPddep8MJ9V062xu')
+db.session.add(user)
 db.session.commit()
 
-with open('data/printers.csv') as printers:
+with open('seed/printers.csv') as printers:
     db.session.bulk_insert_mappings(Printer, DictReader(printers))
 
-with open('data/filaments.csv') as filaments:
+with open('seed/filaments.csv') as filaments:
     db.session.bulk_insert_mappings(Filament, DictReader(filaments))
 
 posts2 = []
-with open('data/posts.csv') as posts1:
+with open('seed/posts.csv') as posts1:
     for row in DictReader(posts1):
         posts2.append(row)
 
